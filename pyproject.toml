@@ -1,0 +1,12 @@
+[project]
+name = "new"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "boto3>=1.42.93",
+    "django>=6.0.4",
+    "django-ckeditor-5>=0.2.20",
+    "dotenv>=0.9.9",
+]
