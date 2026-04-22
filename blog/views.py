@@ -9,4 +9,10 @@ class PostListView(ListView):
     paginate_by = 5
     template_name = 'blog/post_list.html'
 
+class PostDetailView(DetailView):
+    model = Post
+    template_name = 'blog/post_detail.html'
+    context_object_name = 'post'
 
+    def get_queryset(self):
+        return Post.objects.filter(is_active=True)

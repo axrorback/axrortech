@@ -8,5 +8,8 @@ dependencies = [
     "boto3>=1.42.93",
     "django>=6.0.4",
     "django-ckeditor-5>=0.2.20",
+    "django-storages>=1.14.6",
     "dotenv>=0.9.9",
+    "pip>=26.0.1",
+    "python-dotenv>=1.2.2",
 ]

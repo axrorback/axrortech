@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block title %}Haqimda | axrorback{% endblock %}
+
+{% block extra_head %}
+<style>
+    .about-container {
+        animation: fadeIn 0.8s ease-in-out;
+    }
+
+    /* Profil rasmi stili */
+    .profile-section {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .profile-image-wrapper {
+        position: relative;
+        display: inline-block;
+    }
+
+    .profile-img {
+        width: 180px;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 4px solid var(--card-bg);
+        box-shadow: 0 0 0 2px var(--primary);
+        padding: 5px;
+        background: white;
+    }
+
+    .status-dot {
+        position: absolute;
+        bottom: 15px;
+        right: 15px;
+        width: 18px;
+        height: 18px;
+        background: #27c93f;
+        border: 3px solid white;
+        border-radius: 50%;
+    }
+
+    /* Ism va sharif */
+    .about-name {
+        font-weight: 700;
+        letter-spacing: -1px;
+        margin-top: 1rem;
+    }
+
+    /* Kontent qismi (CKEditor uchun) */
+    .about-content {
+        line-height: 1.8;
+        font-size: 1.05rem;
+        color: var(--text);
+    }
+
+    .about-content h2, .about-content h3 {
+        color: var(--primary);
+        font-weight: 600;
+        margin-top: 2rem;
+    }
+
+    .about-content img {
+        max-width: 100%;
+        border-radius: 8px;
+        margin: 1rem 0;
+    }
+
+    /* DevOps Info Bar */
+    .info-bar {
+        background: var(--terminal-head);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 15px;
+        font-family: var(--font-mono);
+        font-size: 0.85rem;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 576px) {
+        .profile-img {
+            width: 140px;
+            height: 140px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="about-container">
+    {% if about %}
+    <nav class="mb-4">
+        <span class="text-muted small">{{ request.path }} --status: active</span>
+    </nav>
+
+    <section class="profile-section">
+        <div class="profile-image-wrapper">
+            {% if about.image %}
+                <img src="{{ about.image.url }}" alt="{{ about.name }}" class="profile-img">
+            {% else %}
+                <div class="profile-img d-flex align-items-center justify-content-center bg-light">
+                    <i class="bi bi-person-fill fs-1 text-muted"></i>
+                </div>
+            {% endif %}
+            <div class="status-dot" title="Tizimda faol"></div>
+        </div>
+        
+        <h1 class="about-name text-dark">
+            <span class="text-primary">$</span> {{ about.name }} {{ about.surname }}
+        </h1>
+        <p class="text-muted opacity-75">DevOps Muhandisi / Backend Dasturchi</p>
+    </section>
+
+    <div class="info-bar mb-5 d-flex flex-wrap gap-4 justify-content-center">
+        <span><i class="bi bi-clock"></i> Tajriba: 3+ yil</span>
+        <span><i class="bi bi-geo-alt"></i> Manzil: Toshkent, UZ</span>
+        <span><i class="bi bi-cpu"></i> Stack: Python/Go/Docker</span>
+    </div>
+
+    <div class="about-content">
+        {{ about.content|safe }}
+    </div>
+
+    <div class="mt-5 pt-4 border-top text-center">
+        <p class="small text-muted mb-4">Birgalikda loyiha ustida ishlashni xohlaysizmi?</p>
+        <div class="d-flex gap-2 justify-content-center flex-wrap">
+            <a href="https://t.me/axrorback" class="btn-action"><i class="bi bi-telegram"></i> Telegramda yozish</a>
+            <a href="mailto:axrorback@gmail.com" class="btn-action"><i class="bi bi-envelope"></i> Email yuborish</a>
+        </div>
+    </div>
+
+    {% else %}
+    <div class="text-center py-5">
+        <i class="bi bi-exclamation-triangle fs-1 text-warning"></i>
+        <p class="mt-3">Ma'lumot topilmadi. ./setup.sh ni ishga tushiring.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
