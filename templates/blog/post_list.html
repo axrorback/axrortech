@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+
+{% block title %}Blog | axrorback{% endblock %}
+
+{% block content %}
+<div class="blog-container">
+    <header class="mb-5">
+        <h1 class="h4 text-primary mb-2">
+            <i class="bi bi-terminal-fill"></i> ls ./blog_posts
+        </h1>
+        <div class="terminal-loader d-flex align-items-center gap-2">
+            <span class="small opacity-50">Tizimda:</span>
+            <span class="badge-status text-success">{{ posts.count }} ta maqola</span>
+            <div class="flex-grow-1 border-bottom opacity-25 ms-2"></div>
+        </div>
+    </header>
+
+    <div class="posts-wrapper">
+        {% for post in posts %}
+        <article class="post-card mb-4">
+            <div class="post-meta d-flex justify-content-between align-items-center mb-3">
+                <span class="post-tag">#{{ post.category|default:"general"|lower }}</span>
+                <time class="post-date text-muted small"><i class="bi bi-calendar3"></i> {{ post.created_at|date:"d.m.Y" }}</time>
+            </div>
+
+            <h2 class="h5 post-title mb-3">
+                <a href="{% url 'post_detail' post.slug %}" class="text-decoration-none">
+                    <span class="text-primary">$</span> {{ post.title }}
+                </a>
+            </h2>
+
+            <div class="post-excerpt text-muted">
+                {# Contentni HTMLdan tozalab, bo'shliqlarni tartibga solib ko'rsatamiz #}
+                {{ post.content|striptags|truncatechars:180 }}
+            </div>
+
+            <div class="post-footer mt-4 d-flex justify-content-between align-items-center">
+                <a href="{% url 'post_detail' post.slug %}" class="read-more-link">
+                    --read-more <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </article>
+        {% empty %}
+        <div class="text-center py-5 border border-dashed rounded">
+            <i class="bi bi-search fs-1 opacity-25"></i>
+            <p class="text-muted mt-3">Ma'lumot topilmadi. ./blog_posts bo'sh.</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if is_paginated %}
+    <nav class="pagination-wrapper mt-5">
+        <div class="d-flex justify-content-center align-items-center gap-3">
+            {% if page_obj.has_previous %}
+            <a class="btn-nav" href="?page={{ page_obj.previous_page_number }}">
+                <i class="bi bi-arrow-left"></i>
+            </a>
+            {% endif %}
+
+            <div class="page-indicator">
+                {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+            </div>
+
+            {% if page_obj.has_next %}
+            <a class="btn-nav" href="?page={{ page_obj.next_page_number }}">
+                <i class="bi bi-arrow-right"></i>
+            </a>
+            {% endif %}
+        </div>
+    </nav>
+    {% endif %}
+</div>
+
+<style>
+    /* Post Kartochkasi */
+    .post-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 24px;
+        transition: all 0.2s ease-in-out;
+    }
+
+    .post-card:hover {
+        border-color: var(--primary);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        transform: translateY(-2px);
+    }
+
+    /* Meta va Taglar */
+    .post-tag {
+        font-size: 0.75rem;
+        color: var(--primary);
+        font-weight: 600;
+        background: rgba(26, 127, 55, 0.05);
+        padding: 4px 12px;
+        border-radius: 20px;
+    }
+
+    /* Sarlavha */
+    .post-title a {
+        color: var(--text);
+        transition: color 0.2s;
+    }
+
+    .post-title a:hover {
+        color: var(--accent);
+    }
+
+    /* Matn qismi */
+    .post-excerpt {
+        font-size: 0.92rem;
+        line-height: 1.7;
+        color: #4a5568 !important;
+        /* Faqat 3 qator ko'rsatish */
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    /* Havola */
+    .read-more-link {
+        color: var(--text);
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .read-more-link:hover {
+        color: var(--primary);
+    }
+
+    /* Navigatsiya */
+    .btn-nav {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--border);
+        border-radius: 50%;
+        color: var(--text);
+        text-decoration: none;
+        transition: 0.2s;
+    }
+
+    .btn-nav:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+        background: rgba(26, 127, 55, 0.05);
+    }
+
+    .page-indicator {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text);
+    }
+
+    /* Mobil moslashuv */
+    @media (max-width: 576px) {
+        .post-card {
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .post-title {
+            font-size: 1.1rem;
+        }
+        .post-excerpt {
+            font-size: 0.88rem;
+        }
+    }
+</style>
+{% endblock %}
