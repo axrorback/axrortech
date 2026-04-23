@@ -10,7 +10,7 @@ from sentry_sdk.integrations.django import DjangoIntegration
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['axror.tech','localhost', '127.0.0.1', 'www.axror.tech']
 
@@ -34,6 +34,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -165,6 +166,6 @@ sentry_sdk.init(
 
     send_default_pii=True,
 
-    traces_sample_rate=0.2,   # performance monitoring
+    traces_sample_rate=0.2,
     environment="production",
 )
