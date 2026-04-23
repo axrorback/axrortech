@@ -5,12 +5,15 @@ from dotenv import load_dotenv
 import os
 load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['axror.tech','localhost', '127.0.0.1', 'www.axror.tech']
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -151,3 +154,17 @@ MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/'
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+
+sentry_sdk.init(
+    dsn=os.getenv('SENTRY_DSN'),
+
+    integrations=[
+        DjangoIntegration(),
+    ],
+
+    send_default_pii=True,
+
+    traces_sample_rate=0.2,   # performance monitoring
+    environment="production",
+)
