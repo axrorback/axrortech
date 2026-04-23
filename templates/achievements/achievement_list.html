@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Yutuqlar | axrorback{% endblock %}
+
+{% block content %}
+<div class="achievements-container">
+    <header class="mb-5">
+        <h1 class="h4 text-primary">
+            <i class="bi bi-trophy"></i> ./display --achievements
+        </h1>
+        <p class="text-muted small">Muvaffaqiyatli yakunlangan bosqichlar va sertifikatlar ro'yxati.</p>
+    </header>
+
+    <div class="row g-4">
+        {% for achievement in achievements %}
+        <div class="col-md-6 col-lg-4">
+            <div class="achievement-card">
+                {% if achievement.image %}
+                <div class="achievement-img-wrapper">
+                    <img src="{{ achievement.image.url }}" alt="{{ achievement.title }}" class="achievement-img">
+                </div>
+                {% endif %}
+                
+                <div class="p-3">
+                    <div class="small text-primary mb-1 mono">[{{ achievement.achievement_year }}]</div>
+                    <h5 class="fw-bold h6 mb-3 text-dark">{{ achievement.title }}</h5>
+                    <a href="{% url 'achievement_detail' achievement.pk %}" class="btn-action btn-sm w-100 text-center">
+                        --details
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <p class="text-muted">Hozircha yutuqlar kiritilmagan.</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if is_paginated %}
+    <nav class="mt-5 d-flex justify-content-center">
+        <div class="pagination-box">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}" class="btn-action"><i class="bi bi-chevron-left"></i></a>
+            {% endif %}
+            
+            <span class="mx-3 mono">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}" class="btn-action"><i class="bi bi-chevron-right"></i></a>
+            {% endif %}
+        </div>
+    </nav>
+    {% endif %}
+</div>
+
+<style>
+    .achievement-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        overflow: hidden;
+        transition: 0.3s;
+        height: 100%;
+    }
+    .achievement-card:hover {
+        border-color: var(--primary);
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+    .achievement-img-wrapper {
+        height: 160px;
+        overflow: hidden;
+        border-bottom: 1px solid var(--border);
+    }
+    .achievement-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .mono { font-family: var(--font-mono); }
+</style>
+{% endblock %}

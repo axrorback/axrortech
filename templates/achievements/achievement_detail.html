@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}{{ achievement.title }} | axrorback{% endblock %}
+
+{% block content %}
+<article class="achievement-detail">
+    <nav class="mb-4">
+        <a href="{% url 'achievement' %}" class="btn-action btn-sm">
+            <i class="bi bi-arrow-left"></i> cd ../achievements
+        </a>
+    </nav>
+
+    <header class="mb-4">
+        <h1 class="fw-bold h2">{{ achievement.title }}</h1>
+        <div class="text-muted small">Qo'shilgan sana: {{ achievement.created_at|date:"d.m.Y" }}</div>
+    </header>
+
+    {% if achievement.image %}
+    <div class="mb-4 text-center">
+        <img src="{{ achievement.image.url }}" alt="{{ achievement.title }}" class="img-fluid rounded border shadow-sm" style="max-height: 400px;">
+    </div>
+    {% endif %}
+
+    <div class="achievement-content mt-4">
+        {{ achievement.description|safe }}
+    </div>
+
+    <footer class="mt-5 pt-4 border-top text-center">
+        <button onclick="window.print()" class="btn-action">
+            <i class="bi bi-printer"></i> print_copy()
+        </button>
+    </footer>
+</article>
+
+<style>
+    .achievement-content {
+        line-height: 1.8;
+        font-size: 1.05rem;
+    }
+    .achievement-content img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+    }
+</style>
+{% endblock %}

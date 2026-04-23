@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% block title %}Bog'lanish | axrorback{% endblock %}
+
+{% block extra_head %}
+<style>
+    .contact-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+
+    .contact-item {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        text-decoration: none;
+        color: var(--text);
+        transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .contact-item:hover {
+        border-color: var(--primary);
+        transform: translateY(-3px);
+        color: var(--primary);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .icon-box {
+        width: 45px;
+        height: 45px;
+        background: var(--terminal-head);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        color: var(--primary);
+    }
+
+    .contact-label {
+        font-size: 0.75rem;
+        opacity: 0.6;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 2px;
+    }
+
+    .contact-value {
+        font-weight: 600;
+        font-size: 0.95rem;
+        word-break: break-all;
+    }
+
+    .social-section {
+        border-top: 1px dashed var(--border);
+        padding-top: 2rem;
+    }
+
+    .social-flex {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    /* Forma dizayni */
+    .form-container {
+        background: var(--terminal-head);
+        border-radius: 12px;
+        padding: 2rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <header class="mb-5">
+        <h1 class="h4 text-primary">
+            <i class="bi bi-terminal-fill"></i> ./contact_info --all
+        </h1>
+        <div class="border-bottom opacity-25 mt-2"></div>
+    </header>
+
+    {% if links %}
+    <div class="contact-grid">
+        <a href="tel:{{ links.phone_number }}" class="contact-item">
+            <div class="icon-box"><i class="bi bi-telephone"></i></div>
+            <div>
+                <div class="contact-label">Telefon</div>
+                <div class="contact-value">{{ links.phone_number }}</div>
+            </div>
+        </a>
+
+        <a href="mailto:{{ links.email }}" class="contact-item">
+            <div class="icon-box"><i class="bi bi-envelope-at"></i></div>
+            <div>
+                <div class="contact-label">Email</div>
+                <div class="contact-value">{{ links.email }}</div>
+            </div>
+        </a>
+
+        <div class="contact-item">
+            <div class="icon-box"><i class="bi bi-geo-alt"></i></div>
+            <div>
+                <div class="contact-label">Manzil</div>
+                <div class="contact-value">{{ links.address }}</div>
+            </div>
+        </div>
+
+        <a href="{{ links.website_url }}" target="_blank" class="contact-item">
+            <div class="icon-box"><i class="bi bi-globe"></i></div>
+            <div>
+                <div class="contact-label">Veb-sayt</div>
+                <div class="contact-value">{{ links.website_url|truncatechars:25 }}</div>
+            </div>
+        </a>
+    </div>
+
+    <section class="social-section mb-5">
+        <h6 class="mb-4 opacity-50 fw-bold"><i class="bi bi-share"></i> IJTIMOIY TARMOQLAR</h6>
+        <div class="social-flex">
+            {% if links.telegram_username %}
+            <a href="https://t.me/{{ links.telegram_username }}" target="_blank" class="btn-action"><i class="bi bi-telegram"></i> Telegram</a>
+            {% endif %}
+
+            {% if links.github_username %}
+            <a href="https://github.com/{{ links.github_username }}" target="_blank" class="btn-action"><i class="bi bi-github"></i> GitHub</a>
+            {% endif %}
+
+            {% if links.linkedin_url %}
+            <a href="{{ links.linkedin_url }}" target="_blank" class="btn-action"><i class="bi bi-linkedin"></i> LinkedIn</a>
+            {% endif %}
+
+            {% if links.instagram_url %}
+            <a href="{{ links.instagram_url }}" target="_blank" class="btn-action"><i class="bi bi-instagram"></i> Instagram</a>
+            {% endif %}
+
+            {% if links.facebook_url %}
+            <a href="{{ links.facebook_url }}" target="_blank" class="btn-action"><i class="bi bi-facebook"></i> Facebook</a>
+            {% endif %}
+
+            {% if links.twitter_url %}
+            <a href="{{ links.twitter_url }}" target="_blank" class="btn-action"><i class="bi bi-twitter-x"></i> Twitter</a>
+            {% endif %}
+        </div>
+    </section>
+    {% endif %}
+
+    <div class="form-container">
+        <h5 class="mb-4 fw-bold"><i class="bi bi-chat-right-text"></i> Xabar qoldirish</h5>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-success border-0 small mb-4">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="small mb-1 opacity-75">To'liq ismingiz</label>
+                    <input type="text" name="name" class="form-control bg-white border-0 shadow-sm" placeholder="Ahrorjon..." required>
+                </div>
+                <div class="col-md-6">
+                    <label class="small mb-1 opacity-75">Email manzilingiz</label>
+                    <input type="email" name="email" class="form-control bg-white border-0 shadow-sm" placeholder="sudo@axror.tech" required>
+                </div>
+                <div class="col-12">
+                    <label class="small mb-1 opacity-75">Xabar matni</label>
+                    <textarea name="message" class="form-control bg-white border-0 shadow-sm" rows="5" placeholder="Hamkorlik bo'yicha taklifim bor..." required></textarea>
+                </div>
+                <div class="col-12 mt-4 text-center">
+                    <button type="submit" class="btn-action px-5 py-2">
+                        <i class="bi bi-send-fill"></i> xabarni_yuborish()
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}Asosiy | axrorback{% endblock %}
+
+{% block content %}
+<div class="main-page">
+    <header class="hero-section mb-5">
+        <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="user-avatar">
+                <i class="bi bi-person-bounding-box display-4 text-primary"></i>
+            </div>
+            <div>
+                <h1 class="h3 mb-0 fw-bold">axrorback_os v4.2</h1>
+                <p class="small text-muted mb-0">Last login: {{ latest_posts.0.created_at|date:"D M d H:i:s" }} from 127.0.0.1</p>
+            </div>
+        </div>
+        
+        <div class="typing-container p-3 bg-light border rounded">
+            <code class="text-dark">
+                <span class="text-primary">$</span> whoami <br>
+                <span class="opacity-75">
+                    {% if about_short %}
+                        {{ about_short.name }} {{ about_short.surname }} — DevOps muhandisi va Backend dasturchi. 
+                        Bulutli texnologiyalar va tizimlar avtomatizatsiyasi mutaxasisi
+                    {% else %}
+                        Tizim foydalanuvchisi aniqlanmadi...
+                    {% endif %}
+                </span>
+            </code>
+        </div>
+    </header>
+
+    <div class="row g-3 mb-5">
+        <div class="col-md-4">
+            <div class="status-card border rounded p-3 text-center">
+                <div class="small opacity-50">PROYEKTLAR</div>
+                <div class="h4 fw-bold mb-0">15+</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="status-card border rounded p-3 text-center">
+                <div class="small opacity-50">MAQOLALAR</div>
+                <div class="h4 fw-bold mb-0">{% if post_count %}{{ post_count }}+{% else %}0{% endif %}</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="status-card border rounded p-3 text-center">
+                <div class="small opacity-50">UPTIME</div>
+                <div class="h4 fw-bold mb-0 text-success">99.9%</div>
+            </div>
+        </div>
+    </div>
+
+    <section class="recent-posts mb-5">
+        <h5 class="mb-4 d-flex align-items-center gap-2">
+            <i class="bi bi-journal-code text-primary"></i> 
+            <span>ls ./latest_posts</span>
+        </h5>
+        
+        <div class="list-group list-group-flush border-top">
+            {% for post in latest_posts %}
+            <a href="{% url 'post_detail' post.slug %}" class="list-group-item list-group-item-action py-3 px-0 border-bottom">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="text-truncate me-3">
+                        <span class="text-primary me-2">#</span>
+                        <span class="fw-bold">{{ post.title }}</span>
+                    </div>
+                    <span class="small text-muted mono">{{ post.created_at|date:"M d" }}</span>
+                </div>
+            </a>
+            {% empty %}
+            <p class="text-muted small py-3">Hozircha maqolalar yo'q.</p>
+            {% endfor %}
+        </div>
+        
+        <div class="mt-3">
+            <a href="{% url 'post_list' %}" class="btn-action btn-sm">--view-all-posts</a>
+        </div>
+    </section>
+
+    <section class="commands-section py-4 bg-dark text-white rounded p-4">
+        <h6 class="text-success mb-3"><i class="bi bi-terminal"></i> Mavjud komandalar:</h6>
+        <div class="row g-2">
+            <div class="col-6 col-md-3">
+                <a href="{% url 'about' %}" class="text-decoration-none text-white small d-block">
+                    <span class="text-warning">./</span>about.py
+                </a>
+            </div>
+            <div class="col-6 col-md-3">
+                <a href="{% url 'contact' %}" class="text-decoration-none text-white small d-block">
+                    <span class="text-warning">./</span>contact.py
+                </a>
+            </div>
+            <div class="col-6 col-md-3">
+                <a href="#" class="text-decoration-none text-white small d-block">
+                    <span class="text-warning">./</span>projects.py
+                </a>
+            </div>
+            <div class="col-6 col-md-3">
+                <a href="{% url 'achievement' %}" class="text-decoration-none text-white small d-block">
+                    <span class="text-warning">./</span>yutuqlar.py
+                </a>
+            </div>
+            <div class="col-6 col-md-3">
+                <a href="{% url 'post_list' %}" class="text-decoration-none text-white small d-block">
+                    <span class="text-warning">./</span>maqolalar.py
+                </a>
+            </div>
+        </div>
+    </section>
+</div>
+
+<style>
+    .status-card {
+        background: var(--card-bg);
+        transition: 0.3s;
+    }
+    .status-card:hover {
+        border-color: var(--primary);
+        background: rgba(26, 127, 55, 0.02);
+    }
+    .list-group-item {
+        background: transparent;
+        border-color: var(--border);
+    }
+    .list-group-item:hover {
+        background: rgba(26, 127, 55, 0.03);
+    }
+    .mono {
+        font-family: var(--font-mono);
+    }
+    .hero-section .typing-container {
+        border-left: 4px solid var(--primary) !important;
+    }
+</style>
+{% endblock %}
