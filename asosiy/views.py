@@ -13,3 +13,10 @@ class IndexView(TemplateView):
         context['latest_posts'] = Post.objects.filter(is_active=True).order_by('-created_at')[:7]
         context['about_short'] = About.objects.filter(is_active=True).first()
         return context
+
+def robots_txt(request):
+    return render(
+        request,
+        "robots.txt",
+        content_type="text/plain"
+    )

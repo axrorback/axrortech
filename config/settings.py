@@ -19,9 +19,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sitemaps',
     #Local Apps
     'blog',
-    'questions',
     'asosiy',
     'about',
     #External Apps
@@ -148,8 +148,6 @@ AWS_S3_ENDPOINT_URL = os.getenv('AWS_S3_ENDPOINT_URL')
 AWS_S3_CUSTOM_DOMAIN = 'media.axror.tech'
 AWS_S3_FILE_OVERWRITE = False
 MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/'
-
-
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'

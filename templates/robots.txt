@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://axror.tech/sitemap.xml
+RSS: https://axror.tech/rss/posts/
