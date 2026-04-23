@@ -27,13 +27,4 @@ RUN mkdir -p /app/media
 
 EXPOSE 8000
 
-CMD [
-    "uv",
-    "run",
-    "gunicorn",
-    "config.asgi:application",
-    "-k",
-    "uvicorn.workers.UvicornWorker",
-    "--bind",
-    "0.0.0.0:8000"
-]
+CMD ["uv", "run", "gunicorn", "config.asgi:application", "--bind", "0.0.0.0:8000"]
