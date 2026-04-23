@@ -14,6 +14,8 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['axror.tech','localhost', '127.0.0.1', 'www.axror.tech']
 
+CSRF_TRUSTED_ORIGINS = ['https://axror.tech', 'https://www.axror.tech']
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
