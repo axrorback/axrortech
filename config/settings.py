@@ -10,7 +10,7 @@ from sentry_sdk.integrations.django import DjangoIntegration
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['axror.tech','localhost', '127.0.0.1', 'www.axror.tech']
 
@@ -119,12 +119,8 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT'),
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
 
@@ -161,17 +157,17 @@ MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/'
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
 
-
-sentry_sdk.init(
-    dsn=os.getenv('SENTRY_DSN'),
-
-    integrations=[
-        DjangoIntegration(),
-    ],
-
-    send_default_pii=True,
-
-    traces_sample_rate=0.2,
-    environment="production",
-)
+# sentry_sdk.init(
+#     dsn=os.getenv('SENTRY_DSN'),
+#
+#     integrations=[
+#         DjangoIntegration(),
+#     ],
+#
+#     send_default_pii=True,
+#
+#     traces_sample_rate=0.2,
+#     environment="production",
+# )
