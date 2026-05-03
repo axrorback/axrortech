@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}404 - Sahifa topilmadi | axrorback{% endblock %}
+
+{% block content %}
+<div class="text-center py-5">
+    <!-- Xatolik kodi terminal uslubida -->
+    <h1 class="display-1 fw-bold text-danger mb-4" style="font-family: var(--font-mono);">
+        <i class="bi bi-exclamation-triangle"></i> 404
+    </h1>
+    
+    <div class="mb-4">
+        <h2 class="fs-4 mb-3">axrorback@portfolio:~$ ./find_page.sh</h2>
+        <p class="text-muted mb-4">
+            <span class="text-danger">[ERROR]:</span> Ko'rsatilgan manzil bo'yicha hech qanday fayl yoki yo'nalish topilmadi. 
+            Ehtimol, manzil o'zgargan yoki server keshida xatolik yuz bergan.
+        </p>
+    </div>
+
+    <!-- Terminal komandalariga o'xshash navigatsiya -->
+    <div class="bg-light p-4 rounded-4 border border-dashed mb-5">
+        <p class="small text-secondary mb-3 text-start">Quyidagi buyruqlardan birini tanlang:</p>
+        <div class="d-flex flex-column gap-2 align-items-start ps-lg-5">
+            <a href="/" class="text-decoration-none text-primary">
+                <span class="text-dark">>>></span> cd /home/axrorback/asosiy
+            </a>
+            <a href="{% url 'post_list' %}" class="text-decoration-none text-primary">
+                <span class="text-dark">>>></span> ls /var/www/maqolalar
+            </a>
+            <a href="{% url 'contact' %}" class="text-decoration-none text-primary">
+                <span class="text-dark">>>></span> ./report_issue.sh
+            </a>
+        </div>
+    </div>
+
+    <a href="/" class="btn-action">
+        <i class="bi bi-house"></i> Bosh sahifaga qaytish
+    </a>
+</div>
+{% endblock %}
