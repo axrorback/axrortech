@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div style="max-width: 600px; margin: 40px auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e1e4e8;">
+
+        <!-- Header qismi: Brend rangi bilan -->
+        <div style="background-color: #24292e; padding: 30px; text-align: center;">
+            <h1 style="color: #ffffff; margin: 0; font-size: 24px; letter-spacing: 1px;">MINNATDORCHILIK</h1>
+        </div>
+
+        <div style="padding: 40px 30px;">
+            <h2 style="color: #1a7f37; margin-top: 0;">Assalomu alaykum, {{ user_name }}!</h2>
+
+            <p style="color: #444; font-size: 16px; line-height: 1.8;">
+                Men, <strong>Ahrorjon</strong>, loyihalarimni rivojlantirishga qo'shgan hissangiz va bildirilgan ishonchingiz uchun sizdan juda minnatdorman.
+            </p>
+
+            <!-- Donatsiya kartasi -->
+            <div style="background: #f0f9f1; border-left: 4px solid #1a7f37; padding: 20px; border-radius: 8px; margin: 25px 0;">
+                <p style="margin: 0; color: #555; font-size: 14px;">Qabul qilingan miqdor:</p>
+                <p style="margin: 5px 0 0 0; color: #1a7f37; font-size: 28px; font-weight: bold;">
+                    {{ amount }} <span style="font-size: 18px;">UZS</span>
+                </p>
+            </div>
+
+            <p style="color: #444; font-size: 16px; line-height: 1.8;">
+                Bu kabi qo'llab-quvvatlash menga yangi Open Source loyihalar ustida ishlash va foydali kontentlar ulashishda katta kuch beradi. Har bir e'tibor men uchun juda qadrli.
+            </p>
+
+            <!-- Button (Call to action) -->
+            <div style="text-align: center; margin-top: 30px;">
+                <a href="https://axror.tech" style="background-color: #2ea44f; color: white; padding: 12px 25px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Loyihalarni ko'rish</a>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div style="background-color: #fafbfc; padding: 30px; border-top: 1px solid #e1e4e8; text-align: center;">
+            <p style="margin: 0; font-size: 14px; color: #586069;">
+                Hurmat bilan,<br>
+                <strong style="color: #24292e;">Ahrorjon</strong><br>
+                Backend & DevOps Engineer
+            </p>
+            <div style="margin-top: 15px;">
+                <a href="https://axror.tech" style="color: #0366d6; text-decoration: none; font-size: 13px; margin: 0 10px;">Website</a>
+                <a href="https://github.com/axrorback" style="color: #0366d6; text-decoration: none; font-size: 13px; margin: 0 10px;">GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 20px; padding-bottom: 20px;">
+        <p style="font-size: 11px; color: #888;">
+            Ushbu xabar avtomatik ravishda yuborildi. <br>
+            &copy; 2026 axror.tech - Hamma huquqlar himoyalangan.
+        </p>
+    </div>
+</body>
+</html>
