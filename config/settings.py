@@ -215,16 +215,15 @@ DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
 RECAPTCHA_SITE_KEY = os.getenv('RECAPTCHA_SITE_KEY')
 RECAPTCHA_SECRET_KEY = os.getenv('RECAPTCHA_SECRET_KEY')
 
+sentry_sdk.init(
+    dsn=os.getenv('SENTRY_DSN'),
 
-# sentry_sdk.init(
-#     dsn=os.getenv('SENTRY_DSN'),
-#
-#     integrations=[
-#         DjangoIntegration(),
-#     ],
-#
-#     send_default_pii=True,
-#
-#     traces_sample_rate=0.2,
-#     environment="production",
-# )
+    integrations=[
+        DjangoIntegration(),
+    ],
+
+    send_default_pii=True,
+
+    traces_sample_rate=0.2,
+    environment="production",
+)
