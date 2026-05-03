@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+
+{% block extra_head %}
+<style>
+    .terminal-window .form-control {
+        background-color: #f8f9fa;
+        border: 1px solid var(--border);
+        font-family: var(--font-mono);
+        padding: 0.75rem 1rem;
+    }
+
+    .terminal-window .form-control:focus {
+        background-color: #fff;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(26, 127, 55, 0.1);
+    }
+
+    .input-group-text {
+        background-color: var(--terminal-head);
+        border: 1px solid var(--border);
+        font-size: 0.85rem;
+    }
+
+    .donator-item {
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+        transition: 0.2s;
+    }
+
+    .donator-item:hover {
+        background-color: rgba(26, 127, 55, 0.03);
+    }
+
+    .nowrap { white-space: nowrap; }
+    .font-italic { font-style: italic; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+
+    <!-- FORM -->
+    <div class="col-lg-6">
+        <h2 class="fs-5 mb-3 text-success fw-bold">
+            <i class="bi bi-terminal-fill"></i> ./donate.sh
+        </h2>
+
+        <div class="terminal-window p-4 bg-white border rounded shadow-sm">
+
+            <!-- USER INFO -->
+            <div class="alert alert-light border py-2 px-3 mb-3 small">
+                <i class="bi bi-person-check-fill text-success"></i>
+                Siz <strong>{{ user.username }}</strong> sifatida donate qilyapsiz
+            </div>
+
+            <!-- MESSAGES -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} small mb-3">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <!-- FORM -->
+            <form method="POST" id="donate-form">
+                {% csrf_token %}
+
+                <div class="mb-4">
+                    <label class="form-label small fw-bold text-muted">SUMMA</label>
+                    <div class="input-group">
+                        <input type="number" name="amount" class="form-control" required min="1000" placeholder="5000">
+                        <span class="input-group-text">UZS</span>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label small fw-bold text-muted">XABAR (ixtiyoriy)</label>
+                    <textarea name="message" class="form-control" rows="3"></textarea>
+                </div>
+
+                <button type="submit" id="submit-btn"
+                        class="btn-action w-100 bg-success text-white border-success py-2">
+                    <i class="bi bi-rocket-takeoff-fill"></i>
+                    Qo'llab-quvvatlash
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="col-lg-6">
+        <h2 class="fs-5 mb-3 text-primary fw-bold">
+            <i class="bi bi-bar-chart-fill"></i> stats.json
+        </h2>
+
+        <div class="terminal-window p-4 bg-white border rounded shadow-sm">
+
+            <div class="text-center mb-4 border-bottom pb-3">
+                <div class="small text-muted">JAMI</div>
+                <div class="h2 fw-bold text-success">
+                    {{ total_sum|floatformat:0 }} UZS
+                </div>
+            </div>
+
+            <div style="max-height: 380px; overflow-y:auto;">
+                {% for d in top_donators %}
+                <div class="d-flex justify-content-between py-2 donator-item">
+                    <div>
+                        <div class="fw-bold">
+                            {{ d.full_name|default:"Anonim" }}
+                        </div>
+                        {% if d.message %}
+                        <div class="small text-muted font-italic">
+                            {{ d.message }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="text-success fw-bold nowrap">
+                        +{{ d.amount|floatformat:0 }}
+                    </div>
+                </div>
+                {% empty %}
+                <div class="text-center text-muted py-5">
+                    Hozircha donatlar yo‘q
+                </div>
+                {% endfor %}
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<!-- 🔐 reCAPTCHA v3 -->
+<script src="https://www.google.com/recaptcha/api.js?render={{ RECAPTCHA_SITE_KEY }}"></script>
+
+<script>
+grecaptcha.ready(function() {
+    grecaptcha.execute('{{ RECAPTCHA_SITE_KEY }}', {action: 'donate'}).then(function(token) {
+        let input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'g-recaptcha-response';
+        input.value = token;
+        document.getElementById('donate-form').appendChild(input);
+    });
+});
+</script>
+
+<!-- UX -->
+<script>
+const form = document.getElementById('donate-form');
+const btn = document.getElementById('submit-btn');
+
+form.addEventListener('submit', function() {
+    btn.disabled = true;
+    btn.innerText = "Yuborilmoqda...";
+});
+</script>
+
+{% endblock %}
