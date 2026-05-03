@@ -1,19 +1,13 @@
 {% extends "base.html" %}
-
+{% load socialaccount %}
 {% block title %}{{ post.title }} | axrorback{% endblock %}
 
 {% block extra_head %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
 
 <style>
-    .post-detail-header {
-        margin-bottom: 2.5rem;
-    }
-
-    .breadcrumb-nav {
-        font-family: var(--font-mono);
-        margin-bottom: 1.5rem;
-    }
+    .post-detail-header { margin-bottom: 2.5rem; }
+    .breadcrumb-nav { font-family: var(--font-mono); margin-bottom: 1.5rem; }
 
     .post-content {
         line-height: 1.8;
@@ -22,11 +16,7 @@
         word-wrap: break-word;
     }
 
-    .post-content p {
-        margin-bottom: 1.5rem;
-    }
-
-    .post-content h2, .post-content h3, .post-content h4 {
+    .post-content h2, .post-content h3 {
         margin-top: 2.5rem;
         margin-bottom: 1.2rem;
         font-weight: 600;
@@ -35,51 +25,31 @@
 
     .post-content img {
         max-width: 100%;
-        height: auto !important;
+        height: auto;
         border-radius: 12px;
         margin: 2rem 0;
         border: 1px solid var(--border);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
 
-    .post-content table {
-        width: 100%;
-        border-collapse: collapse;
-        min-width: 600px;
+    /* Comment Styling */
+    .comment-card {
+        transition: transform 0.2s;
+        border-left: 4px solid transparent !important;
+    }
+    .comment-card:hover {
+        transform: translateX(5px);
+        border-left: 4px solid var(--primary) !important;
+    }
+    .user-avatar {
+        width: 45px;
+        height: 45px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 2px solid var(--border);
     }
 
-    .post-content table td,
-    .post-content table th {
-        border: 1px solid var(--border);
-        padding: 12px 15px;
-    }
-
-    .post-content table th {
-        background-color: var(--terminal-head);
-    }
-
-    pre {
-        background: #1e1e1e !important;
-        border-radius: 10px;
-        margin: 2rem 0;
-    }
-
-    pre code {
-        font-family: var(--font-mono);
-        font-size: 0.9rem;
-        padding: 1.5rem;
-        display: block;
-        overflow-x: auto;
-    }
-
-    .post-content blockquote {
-        border-left: 4px solid var(--primary);
-        padding: 1rem 1.5rem;
-        margin: 2rem 0;
-        background: rgba(26, 127, 55, 0.03);
-        font-style: italic;
-        color: #4a5568;
-    }
+    pre { background: #1e1e1e !important; border-radius: 10px; margin: 2rem 0; }
+    pre code { font-family: var(--font-mono); font-size: 0.9rem; padding: 1.5rem; display: block; }
 </style>
 {% endblock %}
 
@@ -101,11 +71,7 @@
             </span>
             <span><i class="bi bi-calendar3"></i> {{ post.created_at|date:"d-m-Y" }}</span>
         </div>
-
-        <h1 class="fw-bold text-dark display-6">
-            {{ post.title }}
-        </h1>
-
+        <h1 class="fw-bold text-dark display-6">{{ post.title }}</h1>
         <hr class="opacity-10 mt-4">
     </header>
 
@@ -116,112 +82,96 @@
 
     <hr class="my-5">
 
-    <!-- COMMENTS -->
+    <!-- COMMENTS SECTION -->
     <section class="comments-section mt-5">
-
         <h4 class="mb-4 fw-bold">
-            <i class="bi bi-chat-dots"></i>
-            Comments ({{ post.comments.count }})
+            <i class="bi bi-chat-left-text"></i>
+            Comments <span class="badge bg-light text-dark ms-2">{{ post.comments.count }}</span>
         </h4>
 
         {% for comment in post.comments.all %}
-            <div class="card border-0 shadow-sm mb-3 rounded-4">
+            <div class="card border-0 shadow-sm mb-3 rounded-4 comment-card">
                 <div class="card-body">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <!-- User Avatar -->
+                        {% if comment.user.socialaccount_set.all.0.get_avatar_url %}
+                            <img src="{{ comment.user.socialaccount_set.all.0.get_avatar_url }}" class="user-avatar" alt="user">
+                        {% else %}
+                            <div class="user-avatar bg-primary d-flex align-items-center justify-content-center text-white">
+                                {{ comment.user.username|slice:":1"|upper }}
+                            </div>
+                        {% endif %}
 
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <strong>{{ comment.user }}</strong>
-                        <small class="text-muted">
-                            {{ comment.created_at|date:"d-m-Y H:i" }}
-                        </small>
+                        <div>
+                            <h6 class="mb-0 fw-bold">{{ comment.user.first_name|default:comment.user.username }}</h6>
+                            <small class="text-muted" style="font-size: 0.8rem;">
+                                <i class="bi bi-clock-history"></i> {{ comment.created_at|date:"d-m-Y H:i" }}
+                            </small>
+                        </div>
                     </div>
-
-                    <p class="mb-0 text-secondary">
+                    <p class="mb-0 text-secondary" style="padding-left: 58px;">
                         {{ comment.text }}
                     </p>
-
                 </div>
             </div>
         {% empty %}
-            <div class="text-muted">
-                Hozircha comment yo‘q. Birinchi bo‘lib yozing 🚀
+            <div class="text-center py-4 text-muted bg-light rounded-4">
+                <p class="mb-0">Hozircha comment yo‘q. Birinchi bo‘lib yozing 🚀</p>
             </div>
         {% endfor %}
-
     </section>
 
     <!-- COMMENT FORM -->
     <section class="mt-5">
-
-        <div class="card border-0 shadow-sm rounded-4 p-4">
-
+        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
             {% if user.is_authenticated %}
-
-                <h5 class="mb-3 fw-bold">
-                    <i class="bi bi-pencil-square"></i> Comment yozish
-                </h5>
-
+                <h5 class="mb-3 fw-bold">Comment qoldirish</h5>
                 <form method="post">
                     {% csrf_token %}
-
-                    <textarea name="text"
-                              class="form-control mb-3"
-                              rows="4"
-                              placeholder="Fikringizni yozing..."
-                              required></textarea>
-
+                    <textarea name="text" class="form-control mb-3 border-0 bg-light rounded-3"
+                              rows="4" placeholder="Fikringizni yozing..." required></textarea>
                     <button type="submit" class="btn-action">
-                        <i class="bi bi-send"></i> Yuborish
+                        <i class="bi bi-send-fill"></i> Yuborish
                     </button>
                 </form>
-
             {% else %}
-
                 <div class="text-center py-3">
-                    <h5 class="mb-3">
-                        Comment yozish uchun login qiling
-                    </h5>
-
-                    <a href="#" class="btn-action">
-                        <i class="bi bi-telegram"></i> Telegram orqali kirish
+                    <h5 class="mb-3">Muhokamaga qo'shilish uchun tizimga kiring</h5>
+                    <a href="{% provider_login_url 'google' next=request.get_full_path %}" class="btn-action">
+                        <i class="bi bi-google me-2"></i> Google bilan kirish
                     </a>
                 </div>
-
             {% endif %}
-
         </div>
-
     </section>
 
     <!-- FOOTER -->
     <footer class="mt-5 pt-5">
-        <div class="card bg-light border-0 rounded-4 p-4">
-
+        <div class="card bg-dark text-white border-0 rounded-4 p-4">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-
                 <div>
-                    <h6 class="mb-1 fw-bold">Maqola yoqdimi?</h6>
-                    <p class="small text-muted mb-0">
-                        Fikr va mulohazalaringizni yuboring.
-                    </p>
+                    <h6 class="mb-1 fw-bold text-white">Maqola yoqdimi?</h6>
+                    <p class="small opacity-75 mb-0">Feedback yoki takliflar bo'lsa kutaman.</p>
                 </div>
 
                 <div class="d-flex gap-2">
+                    <!-- Donate Tugmasi - Faqat user login qilgan bo'lsa chiqadi -->
+                    {% if user.is_authenticated %}
+                    <a href="/donate" class="btn btn-warning rounded-pill px-3 fw-bold">
+                        <i class="bi bi-heart-fill me-1"></i> Donate
+                    </a>
+                    {% endif %}
 
                     <a href="https://t.me/share/url?url={{ request.build_absolute_uri }}&text={{ post.title }}"
-                       target="_blank"
-                       class="btn-action">
-                        <i class="bi bi-telegram"></i> ulashish
+                       target="_blank" class="btn-action">
+                        <i class="bi bi-telegram"></i>
                     </a>
 
-                    <a href="mailto:axrorback@gmail.com?subject=Re: {{ post.title }}"
-                       class="btn-action">
-                        <i class="bi bi-envelope"></i> feedback
+                    <a href="mailto:axrorback@gmail.com?subject=Re: {{ post.title }}" class="btn-action">
+                        <i class="bi bi-envelope"></i>
                     </a>
-
                 </div>
-
             </div>
-
         </div>
     </footer>
 
@@ -230,12 +180,11 @@
 
 {% block extra_scripts %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('pre code').forEach((el) => {
-        hljs.highlightElement(el);
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('pre code').forEach((el) => {
+            hljs.highlightElement(el);
+        });
     });
-});
 </script>
 {% endblock %}
