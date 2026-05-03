@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}{{ user_obj.username }} | Profile{% endblock %}
+
+{% block extra_head %}
+<style>
+  .profile-card {
+    background: rgba(26, 127, 55, 0.03);
+    border: 1px dashed var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+
+  .json-key { color: var(--accent); }
+  .json-value { color: var(--primary); }
+  .json-string { color: #d73a49; }
+
+  .avatar-main {
+    border: 3px solid var(--card-bg);
+    box-shadow: 0 0 0 1px var(--border);
+    transition: transform 0.3s ease;
+    object-fit: cover;
+    width: 150px;
+    height: 150px;
+  }
+
+  .bio-box {
+    background: #f6f8fa;
+    border-left: 4px solid var(--primary);
+    padding: 15px;
+    font-size: 0.9rem;
+    color: var(--text);
+    white-space: pre-line; /* Bioning qatorlarini saqlab qoladi */
+  }
+
+  .btn-logout {
+    color: #d73a49 !important;
+    border-color: rgba(215, 58, 73, 0.2) !important;
+  }
+  .btn-logout:hover {
+    background: rgba(215, 58, 73, 0.05) !important;
+    border-color: #d73a49 !important;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<h2 class="mb-4 fs-5 text-muted">
+  <span class="text-success">visitor@axrorback</span>:<span class="text-primary">~</span>$ curl -X GET /api/users/{{ user_obj.username }}
+</h2>
+
+<div class="row g-5">
+
+  <!-- CHAP TOMON: Avatar va Kontaktlar -->
+  <div class="col-md-4 text-center">
+    <div class="mb-3">
+      {% if social %}
+        <img src="{{ social.get_avatar_url }}" alt="avatar" class="avatar-main rounded-circle">
+      {% elif profile.avatar %}
+        <img src="{{ profile.avatar }}" alt="avatar" class="avatar-main rounded-circle">
+      {% else %}
+        <img src="https://ui-avatars.com/api/?name={{ user_obj.username }}&background=1a7f37&color=fff" alt="avatar" class="avatar-main rounded-circle">
+      {% endif %}
+    </div>
+
+    <h3 class="fs-4 mb-1">{{ user_obj.get_full_name|default:user_obj.username }}</h3>
+
+    <div class="d-flex flex-column gap-2 align-items-start profile-card mt-4 mx-auto" style="max-width: 280px;">
+        {% if user_obj.email %}
+        <div class="small text-truncate w-100 text-start">
+            <i class="bi bi-envelope text-muted me-2"></i> {{ user_obj.email }}
+        </div>
+        {% endif %}
+        <div class="small">
+            <i class="bi bi-calendar3 text-muted me-2"></i> Qo'shildi: {{ user_obj.date_joined|date:"M Y" }}
+        </div>
+        <div class="small">
+            <i class="bi bi-shield-check text-muted me-2"></i> Status: <span class="text-success">Aktiv</span>
+        </div>
+    </div>
+  </div>
+
+  <!-- O'NG TOMON: JSON ma'lumotlar -->
+  <div class="col-md-8">
+    <div class="terminal-info">
+      <p class="mb-2 text-muted">// User profile object</p>
+      <div class="font-mono">
+        <span class="json-key">{</span><br>
+        &nbsp;&nbsp;<span class="json-key">"username"</span>: <span class="json-string">"{{ user_obj.username }}"</span>,<br>
+        &nbsp;&nbsp;<span class="json-key">"full_name"</span>: <span class="json-string">"{{ user_obj.get_full_name }}"</span>,<br>
+        &nbsp;&nbsp;<span class="json-key">"is_staff"</span>: <span class="json-value">{{ user_obj.is_staff|lower }}</span>,<br>
+        &nbsp;&nbsp;<span class="json-key">"auth_method"</span>: <span class="json-string">"{% if social %}OAuth/Google{% else %}Password{% endif %}"</span>,<br>
+        &nbsp;&nbsp;<span class="json-key">"last_login"</span>: <span class="json-string">"{{ user_obj.last_login|date:'Y-m-d H:i' }}"</span><br>
+        <span class="json-key">}</span>
+      </div>
+
+      <div class="mt-4">
+
+
+        {% if request.user == user_obj %}
+        <div class="d-flex gap-2 border-top pt-4">
+            <form method="post" action="{% url 'account_logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn-action btn-logout">
+                    <i class="bi bi-box-arrow-right"></i> Tizimdan chiqish (logout)
+                </button>
+            </form>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
