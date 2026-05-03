@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background-color: #f5f7f9;
+            margin: 0;
+            padding: 20px;
+            color: #24292f;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #ffffff;
+            border: 1px solid #d0d7de;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .header {
+            background-color: #eef1f4;
+            padding: 15px 20px;
+            border-bottom: 1px solid #d0d7de;
+            display: flex;
+            align-items: center;
+        }
+        .dot { height: 10px; width: 10px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+        .content {
+            padding: 30px;
+            line-height: 1.6;
+        }
+        .title {
+            color: #1a7f37;
+            font-size: 20px;
+            margin-top: 0;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #1a7f37;
+            color: #ffffff !important;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .footer {
+            padding: 20px;
+            font-size: 12px;
+            color: #656d76;
+            text-align: center;
+            background: #f6f8fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="dot" style="background:#ff5f56"></span>
+            <span class="dot" style="background:#ffbd2e"></span>
+            <span class="dot" style="background:#27c93f"></span>
+            <span style="margin-left: 10px; color: #656d76; font-size: 12px;">~/axrorback/notifications</span>
+        </div>
+        <div class="content">
+            <h2 class="title">axrorback@Portfolio:~$ cat new_post.md</h2>
+            <p>Salom!</p>
+            <p>Blogda yangi maqola e'lon qilindi: <strong>{{ title }}</strong></p>
+
+            <p style="color: #57606a; font-style: italic; border-left: 3px solid #d0d7de; padding-left: 15px;">
+                {{ content|truncatewords:30 }}
+            </p>
+
+            <a href="{{ url }}" class="btn">Maqolani o'qish</a>
+        </div>
+        <div class="footer">
+            © 2026 axrorback | DevOps & Backend Developer<br>
+            Ushbu xabar avtomatik yuborildi.
+        </div>
+    </div>
+</body>
+</html>
