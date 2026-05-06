@@ -14,7 +14,7 @@ def start_handler(message):
 
 🤖 Men sizni **Ahrorjon** bilan tanishtiruvchi botman. 
 
-Bu yerda mening loyihalarimni ko'rishingiz, men bilan bog'lanishingiz yoki ijtimoiy tarmoqlarimni kuzatishingiz mumkin.
+Bu yerda mening loyihalarimni ko'rishingiz, men bilan bog'lanishingiz yoki ijtimoiy tarmoqlarimni kuzatishingiz mumkin.\n\nBot Django WebHook Yordamida Ishlamoqda !
 
 👇 Kerakli bo'limni tanlang:
 """
@@ -40,7 +40,7 @@ def about_handler(message):
     about_text = """
 🚀 **Backend Developer**
 🛠 Stack: Python, Django, DRF, PostgreSQL, Docker.
-📍 Bukhara, Uzbekistan.
+📍 Namangan, Uzbekistan.
 
 Men murakkab tizimlar va API'lar yaratish bilan shug'ullanaman.
 """
@@ -67,17 +67,7 @@ def feedback_save(message):
 def projects_handler(message):
     text = """
 📂 **Mening loyihalarim:**
-
-1. 🌐 Axror Tech Platform  
-   — Portfolio + Blog + SaaS
-
-2. 🤖 Telegram Bots  
-   — Webhook asosida ishlovchi botlar
-
-3. 💳 Payment Service  
-   — TSPay integratsiyasi
-
-👇 Batafsil ko‘rish uchun saytga o‘ting:
+Loyihalarim haqida batafsil mening Github profilimda ko'rishingiz mumkin
 """
     bot.send_message(
         message.chat.id,
