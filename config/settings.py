@@ -228,3 +228,4 @@ sentry_sdk.init(
     traces_sample_rate=0.2,
     environment="production",
 )
+TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
