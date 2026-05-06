@@ -23,36 +23,41 @@ jobs:
             send_telegram() {
               curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
               -d chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
+              -d message_thread_id="${{ secrets.TELEGRAM_THREAD_ID }}" \
               -d text="$1" > /dev/null
             }
 
-            send_telegram "🚀 Deploy started on VPS"
+            # ❗ Agar qayerdadir error bo‘lsa
+            trap 'send_telegram "❌ Deploy FAILED at step: $CURRENT_STEP"' ERR
 
+            send_telegram "🚀 Deploy STARTED"
+
+            CURRENT_STEP="cd project"
             echo "📦 Moving to project..."
-            cd /root/axrortech || {
-              send_telegram "❌ Project folder not found"
-              exit 1
-            }
+            cd /root/axrortech
 
+            CURRENT_STEP="git pull"
             send_telegram "⬇️ Pulling latest code..."
             git reset --hard origin/main
             git pull origin main
 
-            send_telegram "🐍 Syncing dependencies (uv)..."
+            CURRENT_STEP="uv sync"
+            send_telegram "🐍 Syncing dependencies..."
             ~/.local/bin/uv sync
 
+            CURRENT_STEP="migration check"
             send_telegram "🧠 Checking migrations..."
-            ~/.local/bin/uv run manage.py makemigrations --check || {
-              send_telegram "❌ Migration check failed!"
-              exit 1
-            }
+            ~/.local/bin/uv run manage.py makemigrations --check
 
+            CURRENT_STEP="migrate"
             send_telegram "🧱 Applying migrations..."
             ~/.local/bin/uv run manage.py migrate --noinput
 
+            CURRENT_STEP="collectstatic"
             send_telegram "🎨 Collecting static files..."
             ~/.local/bin/uv run manage.py collectstatic --noinput
 
+            CURRENT_STEP="restart service"
             send_telegram "♻️ Restarting Django service..."
             systemctl restart django
 
