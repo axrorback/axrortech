@@ -16,9 +16,9 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
-
           script: |
-            set -e
+            set -euo pipefail
+            set -x
 
             send_telegram() {
               curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
@@ -27,38 +27,52 @@ jobs:
               -d text="$1" > /dev/null
             }
 
-            # ❗ Agar qayerdadir error bo‘lsa
-            trap 'send_telegram "❌ Deploy FAILED at step: $CURRENT_STEP"' ERR
+            trap 'send_telegram "❌ FAILED at: $CURRENT_STEP\nCMD: $BASH_COMMAND"' ERR
 
             send_telegram "🚀 Deploy STARTED"
 
+            # --------------------
             CURRENT_STEP="cd project"
-            echo "📦 Moving to project..."
             cd /root/axrortech
 
-            CURRENT_STEP="git pull"
+            # --------------------
+            CURRENT_STEP="git sync"
             send_telegram "⬇️ Pulling latest code..."
             git reset --hard origin/main
             git pull origin main
 
-            CURRENT_STEP="uv sync"
-            send_telegram "🐍 Syncing dependencies..."
-            ~/.local/bin/uv sync
+            # --------------------
+            CURRENT_STEP="uv check"
+            send_telegram "🐍 Checking uv..."
+            UV_BIN="/root/.local/bin/uv"
+            if [ ! -f "$UV_BIN" ]; then
+              send_telegram "❌ uv not found at $UV_BIN"
+              exit 1
+            fi
 
+            # --------------------
+            CURRENT_STEP="dependencies"
+            send_telegram "📦 Syncing dependencies..."
+            $UV_BIN sync
+
+            # --------------------
             CURRENT_STEP="migration check"
             send_telegram "🧠 Checking migrations..."
-            ~/.local/bin/uv run manage.py makemigrations --check
+            $UV_BIN run python manage.py makemigrations --check --dry-run
 
+            # --------------------
             CURRENT_STEP="migrate"
             send_telegram "🧱 Applying migrations..."
-            ~/.local/bin/uv run manage.py migrate --noinput
+            $UV_BIN run python manage.py migrate --noinput
 
+            # --------------------
             CURRENT_STEP="collectstatic"
             send_telegram "🎨 Collecting static files..."
-            ~/.local/bin/uv run manage.py collectstatic --noinput
+            $UV_BIN run python manage.py collectstatic --noinput
 
-            CURRENT_STEP="restart service"
+            # --------------------
+            CURRENT_STEP="restart"
             send_telegram "♻️ Restarting Django service..."
             systemctl restart django
 
-            send_telegram "✅ Deploy SUCCESSFUL 🎉"
+            send_telegram "✅ DEPLOY SUCCESSFUL 🎉"
