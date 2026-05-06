@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'blog',
     'asosiy',
     'about',
+    'bot',
     #External Apps
     'django_ckeditor_5',
     'allauth',
