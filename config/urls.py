@@ -19,5 +19,6 @@ urlpatterns = [
     path("rss/posts/",LatestPostsFeed(),name="posts_rss"),
     path("rss/about/",AboutFeed(),name="about_rss"),
     path('accounts/', include('allauth.urls')),
+    path('telegram/', include('bot.urls')),
 ]
 handler404 = 'asosiy.views.custom_page_not_found'
