@@ -16,6 +16,7 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
+
           script: |
             set -euo pipefail
             set -x
@@ -37,13 +38,16 @@ jobs:
 
             # --------------------
             CURRENT_STEP="git sync"
-            send_telegram "⬇️ Pulling latest code..."
+            send_telegram "⬇️ Syncing repo..."
+
+            git fetch origin
             git reset --hard origin/main
-            git pull origin main
+            git clean -fd
 
             # --------------------
             CURRENT_STEP="uv check"
             send_telegram "🐍 Checking uv..."
+
             UV_BIN="/root/.local/bin/uv"
             if [ ! -f "$UV_BIN" ]; then
               send_telegram "❌ uv not found at $UV_BIN"
@@ -58,6 +62,8 @@ jobs:
             # --------------------
             CURRENT_STEP="migration check"
             send_telegram "🧠 Checking migrations..."
+
+            # ❗ IMPORTANT: makemigrations emas, check-only
             $UV_BIN run python manage.py makemigrations --check --dry-run
 
             # --------------------
