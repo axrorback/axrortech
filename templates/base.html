@@ -5,7 +5,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
-    <!-- Google Analytics (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-FSHVKW8D73"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -16,27 +15,26 @@
 
     <title>{% block title %}axrorback | DevOps & Backend Portfolio{% endblock title %}</title>
     
-    <!-- SEO Meta Tags -->
-    <meta name="description" content="Axrorback - Professional DevOps muhandisi va Backend dasturchi portfoliosi. Tizimlar avtomatizatsiyasi va yuqori yuklamali loyihalar.">
+    <link rel="icon" type="image/jpeg" href="https://media.axror.tech/media/axror/profile_Oorl551.jpg">
+    <link rel="apple-touch-icon" href="https://media.axror.tech/media/axror/profile_Oorl551.jpg">
+
+    <meta name="description" content="axrorback - Professional DevOps muhandisi va Backend dasturchi portfoliosi. Tizimlar avtomatizatsiyasi va yuqori yuklamali loyihalar.">
     <meta name="keywords" content="axrorback, DevOps, Backend, Django, Python, Docker, Kubernetes, CI/CD, Uzbekistan, Dasturchi">
     <meta name="author" content="axrorback">
     <link rel="canonical" href="{{ request.build_absolute_uri }}">
 
-    <!-- Open Graph / Facebook / LinkedIn -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ request.build_absolute_uri }}">
     <meta property="og:title" content="axrorback | DevOps & Backend Portfolio">
     <meta property="og:description" content="Backend va DevOps sohasidagi tajribam, maqolalarim va yutuqlarim bilan tanishing.">
     <meta property="og:image" content="https://media.axror.tech/profile.jpg">
 
-    <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="{{ request.build_absolute_uri }}">
     <meta property="twitter:title" content="axrorback | DevOps & Backend Portfolio">
     <meta property="twitter:description" content="Backend va DevOps sohasidagi tajribam va loyihalarim.">
     <meta property="twitter:image" content="https://media.axror.tech/profile.jpg">
 
-    <!-- Fonts & Styles -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
@@ -203,6 +201,26 @@
         .social-links-footer a { color: #656d76; transition: 0.2s; }
         .social-links-footer a:hover { color: var(--primary); }
 
+        /* DigitalOcean Badge Section */
+        .do-sponsor-section {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px dashed var(--border);
+        }
+        .do-badge-link {
+            display: inline-block;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+            opacity: 0.85;
+        }
+        .do-badge-link:hover {
+            transform: translateY(-2px);
+            opacity: 1;
+        }
+        .do-badge-link img {
+            height: 32px; /* Badge o'lchamini terminal uslubiga moslab biroz kichraytirdik */
+            width: auto;
+        }
+
         @media (max-width: 576px) {
             .path-display { display: none; }
             .btn-action { width: 100%; justify-content: center; }
@@ -289,16 +307,10 @@
             </div>
         </article>
 
-        <div class="mt-4 d-flex gap-2 justify-content-center flex-wrap">
-            <a href="https://github.com/axrorback" target="_blank" class="btn-action"><i class="bi bi-github"></i> GitHub</a>
-            <a href="https://t.me/axrorback" target="_blank" class="btn-action"><i class="bi bi-telegram"></i> Telegram</a>
-            <a href="mailto:axrorback@gmail.com" class="btn-action"><i class="bi bi-envelope"></i> Email</a>
-        </div>
     </main>
 
     <footer class="footer">
         <div class="container">
-            <!-- Ijtimoiy tarmoqlar -->
             <div class="social-links-footer">
                 <a href="https://t.me/axrorback" target="_blank"><i class="bi bi-telegram"></i></a>
                 <a href="https://instagram.com/axrorback" target="_blank"><i class="bi bi-instagram"></i></a>
@@ -310,7 +322,14 @@
                 <span class="status-online">●</span> tizim_holati: <span class="status-online">aktiv</span>
             </div>
             <div>© <span id="year"></span> axrorback | <span class="text-muted">v4.4-stable</span></div>
-            <div class="small opacity-50 mt-1">Python, Django & Docker orqali boshqariladi</div>
+            <div class="small opacity-50 mt-1">Django va Docker yordamida qurilgan</div>
+
+            <div class="do-sponsor-section">
+                <div class="text-muted small mb-2" style="font-size: 0.7rem; letter-spacing: 0.5px;">PROYEKT INFRASTRUKTURASI UCHUN MINNATDORCHILIK:</div>
+                <a href="https://www.digitalocean.com/?refcode=a389065fec32&utm_campaign=Referral_Invite&utm_medium=Referral_Program&utm_source=badge" class="do-badge-link" target="_blank" rel="noopener">
+                    <img src="https://web-platforms.sfo2.cdn.digitaloceanspaces.com/WWW/Badge%202.svg" alt="DigitalOcean Referral Badge" />
+                </a>
+            </div>
         </div>
     </footer>
 
