@@ -30,8 +30,13 @@
         background-color: rgba(26, 127, 55, 0.03);
     }
 
-    .nowrap { white-space: nowrap; }
-    .font-italic { font-style: italic; }
+    .nowrap {
+        white-space: nowrap;
+    }
+
+    .font-italic {
+        font-style: italic;
+    }
 </style>
 {% endblock %}
 
@@ -66,20 +71,43 @@
                 {% csrf_token %}
 
                 <div class="mb-4">
-                    <label class="form-label small fw-bold text-muted">SUMMA</label>
+                    <label class="form-label small fw-bold text-muted">
+                        SUMMA
+                    </label>
+
                     <div class="input-group">
-                        <input type="number" name="amount" class="form-control" required min="1000" placeholder="5000">
-                        <span class="input-group-text">UZS</span>
+                        <input
+                            type="number"
+                            name="amount"
+                            class="form-control"
+                            required
+                            min="1000"
+                            placeholder="5000"
+                        >
+
+                        <span class="input-group-text">
+                            UZS
+                        </span>
                     </div>
                 </div>
 
                 <div class="mb-4">
-                    <label class="form-label small fw-bold text-muted">XABAR (ixtiyoriy)</label>
-                    <textarea name="message" class="form-control" rows="3"></textarea>
+                    <label class="form-label small fw-bold text-muted">
+                        XABAR (ixtiyoriy)
+                    </label>
+
+                    <textarea
+                        name="message"
+                        class="form-control"
+                        rows="3"
+                    ></textarea>
                 </div>
 
-                <button type="submit" id="submit-btn"
-                        class="btn-action w-100 bg-success text-white border-success py-2">
+                <button
+                    type="submit"
+                    id="submit-btn"
+                    class="btn-action w-100 bg-success text-white border-success py-2"
+                >
                     <i class="bi bi-rocket-takeoff-fill"></i>
                     Qo'llab-quvvatlash
                 </button>
@@ -96,7 +124,10 @@
         <div class="terminal-window p-4 bg-white border rounded shadow-sm">
 
             <div class="text-center mb-4 border-bottom pb-3">
-                <div class="small text-muted">JAMI</div>
+                <div class="small text-muted">
+                    JAMI
+                </div>
+
                 <div class="h2 fw-bold text-success">
                     {{ total_sum|floatformat:0 }} UZS
                 </div>
@@ -104,25 +135,31 @@
 
             <div style="max-height: 380px; overflow-y:auto;">
                 {% for d in top_donators %}
+
                 <div class="d-flex justify-content-between py-2 donator-item">
                     <div>
                         <div class="fw-bold">
                             {{ d.full_name|default:"Anonim" }}
                         </div>
+
                         {% if d.message %}
                         <div class="small text-muted font-italic">
                             {{ d.message }}
                         </div>
                         {% endif %}
                     </div>
+
                     <div class="text-success fw-bold nowrap">
                         +{{ d.amount|floatformat:0 }}
                     </div>
                 </div>
+
                 {% empty %}
+
                 <div class="text-center text-muted py-5">
                     Hozircha donatlar yo‘q
                 </div>
+
                 {% endfor %}
             </div>
 
@@ -130,21 +167,6 @@
     </div>
 
 </div>
-
-<!-- 🔐 reCAPTCHA v3 -->
-<script src="https://www.google.com/recaptcha/api.js?render={{ RECAPTCHA_SITE_KEY }}"></script>
-
-<script>
-grecaptcha.ready(function() {
-    grecaptcha.execute('{{ RECAPTCHA_SITE_KEY }}', {action: 'donate'}).then(function(token) {
-        let input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'g-recaptcha-response';
-        input.value = token;
-        document.getElementById('donate-form').appendChild(input);
-    });
-});
-</script>
 
 <!-- UX -->
 <script>
