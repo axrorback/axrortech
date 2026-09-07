@@ -5,5 +5,6 @@ urlpatterns = [
     path('robots.txt',robots_txt,name='robots'),
     path('profile/<str:username>/',profile_view,name='profile'),
     path('donate/',donate_page,name='donate'),
-    path('callback-donate/',donation_callback,name='callback_donate')
+    path('callback-donate/',donation_callback,name='callback_donate'),
+    path('payment-return/',click_return,name='click_return')
 ]
