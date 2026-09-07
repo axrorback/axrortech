@@ -107,7 +107,7 @@ def donate_page(request):
                 status=Donation.Status.PENDING
             )
 
-            return redirect(data["payment_url"])
+            return redirect(data["payment_link"])
 
         except Exception:
             messages.error(request, "To'lov xizmati vaqtincha ishlamayapti.")
