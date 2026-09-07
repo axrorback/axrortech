@@ -1,0 +1,663 @@
+{% load socialaccount %}
+
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>To'lov holati | axrorback</title>
+
+    <link rel="icon"
+          type="image/jpeg"
+          href="https://media.axror.tech/media/axror/profile_Oorl551.jpg">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap"
+          rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+          rel="stylesheet">
+
+
+    <style>
+
+        :root {
+            --bg: #f5f7f9;
+            --card-bg: #ffffff;
+            --text: #24292f;
+            --primary: #1a7f37;
+            --accent: #0969da;
+            --border: #d0d7de;
+            --terminal-head: #eef1f4;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: var(--font-mono);
+            line-height: 1.5;
+            margin: 0;
+
+            display: flex;
+            flex-direction: column;
+
+            min-height: 100vh;
+
+            -webkit-font-smoothing: antialiased;
+        }
+
+
+        /* Navbar */
+
+        .custom-nav {
+            background: rgba(255, 255, 255, 0.95);
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+            padding: 0.8rem 0;
+        }
+
+        .navbar-brand {
+            font-weight: 600;
+            color: var(--primary) !important;
+            font-size: 1.1rem;
+        }
+
+
+        /* Content */
+
+        .content-wrapper {
+            max-width: 850px;
+            width: 100%;
+
+            margin: 90px auto 40px;
+            padding: 0 15px;
+
+            flex-grow: 1;
+        }
+
+
+        /* Terminal */
+
+        .terminal-window {
+            background: var(--card-bg);
+
+            border: 1px solid var(--border);
+            border-radius: 10px;
+
+            overflow: hidden;
+
+            box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+        }
+
+        .terminal-header {
+            background: var(--terminal-head);
+
+            padding: 12px 16px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            border-bottom: 1px solid var(--border);
+        }
+
+        .terminal-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .dot-1 {
+            background: #ff5f56;
+        }
+
+        .dot-2 {
+            background: #ffbd2e;
+        }
+
+        .dot-3 {
+            background: #27c93f;
+        }
+
+        .path-display {
+            font-size: 0.75rem;
+            color: #656d76;
+        }
+
+        .terminal-body {
+            padding: 25px;
+        }
+
+        @media (min-width: 768px) {
+            .terminal-body {
+                padding: 45px;
+            }
+        }
+
+
+        /* Payment */
+
+        .payment-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .payment-title {
+            font-size: 1.25rem;
+            margin-bottom: 10px;
+        }
+
+        .payment-description {
+            color: #656d76;
+            font-size: 0.9rem;
+            margin-bottom: 30px;
+        }
+
+        .payment-info {
+            background: var(--bg);
+
+            border: 1px solid var(--border);
+            border-radius: 8px;
+
+            padding: 18px;
+
+            max-width: 500px;
+            margin: 0 auto 30px;
+
+            text-align: left;
+
+            font-size: 0.85rem;
+        }
+
+        .payment-row {
+            display: flex;
+            justify-content: space-between;
+
+            gap: 20px;
+
+            padding: 8px 0;
+
+            border-bottom: 1px dashed var(--border);
+        }
+
+        .payment-row:last-child {
+            border-bottom: none;
+        }
+
+        .payment-label {
+            color: #656d76;
+        }
+
+        .status-success {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .status-failed {
+            color: #cf222e;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            color: #9a6700;
+            font-weight: 600;
+        }
+
+
+        /* Button */
+
+        .btn-action {
+            border: 1px solid var(--border);
+
+            background: white;
+            color: var(--text);
+
+            padding: 8px 16px;
+
+            border-radius: 8px;
+
+            font-size: 0.85rem;
+
+            text-decoration: none;
+
+            transition: 0.2s;
+
+            display: inline-flex;
+            align-items: center;
+
+            gap: 8px;
+        }
+
+        .btn-action:hover {
+            border-color: var(--primary);
+
+            color: var(--primary);
+
+            background: rgba(26, 127, 55, 0.03);
+
+            transform: translateY(-1px);
+        }
+
+
+        /* Footer */
+
+        .footer {
+            text-align: center;
+
+            padding: 30px 15px;
+
+            border-top: 1px solid var(--border);
+
+            font-size: 0.75rem;
+
+            color: #656d76;
+
+            background: white;
+        }
+
+        .status-online {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+
+        @media (max-width: 576px) {
+
+            .path-display {
+                display: none;
+            }
+
+            .payment-row {
+                flex-direction: column;
+                gap: 2px;
+            }
+
+            .btn-action {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- Navbar -->
+
+<nav class="navbar fixed-top custom-nav">
+
+    <div class="container">
+
+        <a class="navbar-brand" href="/">
+            <i class="bi bi-cpu"></i>
+            ~/axrorback
+        </a>
+
+    </div>
+
+</nav>
+
+
+<!-- Content -->
+
+<main class="content-wrapper">
+
+    <article class="terminal-window">
+
+
+        <!-- Terminal Header -->
+
+        <div class="terminal-header">
+
+            <div class="terminal-dots">
+
+                <div class="dot dot-1"></div>
+                <div class="dot dot-2"></div>
+                <div class="dot dot-3"></div>
+
+            </div>
+
+
+            <div class="path-display">
+
+                <i class="bi bi-terminal"></i>
+
+                {{ request.path }}
+
+            </div>
+
+        </div>
+
+
+        <!-- Terminal Body -->
+
+        <div class="terminal-body">
+
+
+            {% if donation.status == "success" %}
+
+                <div class="text-center">
+
+                    <div class="payment-icon">
+                        <i class="bi bi-check-circle-fill"
+                           style="color: var(--primary);"></i>
+                    </div>
+
+
+                    <h2 class="payment-title">
+
+                        axrorback@portfolio:~$
+                        payment --status=success
+
+                    </h2>
+
+
+                    <p class="payment-description">
+
+                        To'lovingiz muvaffaqiyatli amalga oshirildi.
+                        Qo'llab-quvvatlaganingiz uchun rahmat!
+
+                    </p>
+
+
+                    <div class="payment-info">
+
+                        <div class="payment-row">
+
+                            <span class="payment-label">
+                                order_id
+                            </span>
+
+                            <strong>
+                                {{ donation.order_id }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="payment-row">
+
+                            <span class="payment-label">
+                                amount
+                            </span>
+
+                            <strong>
+                                {{ donation.amount }} so'm
+                            </strong>
+
+                        </div>
+
+
+                        <div class="payment-row">
+
+                            <span class="payment-label">
+                                status
+                            </span>
+
+                            <span class="status-success">
+                                SUCCESS
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <a href="/" class="btn-action">
+
+                        <i class="bi bi-house"></i>
+
+                        Bosh sahifaga qaytish
+
+                    </a>
+
+                </div>
+
+
+            {% elif donation.status == "failed" %}
+
+                <div class="text-center">
+
+                    <div class="payment-icon">
+
+                        <i class="bi bi-x-circle-fill"
+                           style="color: #cf222e;"></i>
+
+                    </div>
+
+
+                    <h2 class="payment-title">
+
+                        axrorback@portfolio:~$
+                        payment --status=failed
+
+                    </h2>
+
+
+                    <p class="payment-description">
+
+                        To'lov amalga oshmadi yoki bekor qilindi.
+
+                    </p>
+
+
+                    <div class="payment-info">
+
+                        <div class="payment-row">
+
+                            <span class="payment-label">
+                                order_id
+                            </span>
+
+                            <strong>
+                                {{ donation.order_id }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="payment-row">
+
+                            <span class="payment-label">
+                                status
+                            </span>
+
+                            <span class="status-failed">
+                                FAILED
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="d-flex justify-content-center gap-2 flex-wrap">
+
+                        <a href="{% url 'donate' %}"
+                           class="btn-action">
+
+                            <i class="bi bi-arrow-repeat"></i>
+
+                            Qayta urinish
+
+                        </a>
+
+
+                        <a href="/"
+                           class="btn-action">
+
+                            <i class="bi bi-house"></i>
+
+                            Bosh sahifa
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+            {% else %}
+
+                <div class="text-center">
+
+                    <div class="payment-icon">
+
+                        <i class="bi bi-hourglass-split"
+                           style="color: #9a6700;"></i>
+
+                    </div>
+
+
+                    <h2 class="payment-title">
+
+                        axrorback@portfolio:~$
+                        payment --status=pending
+
+                    </h2>
+
+
+                    <p class="payment-description">
+
+                        To'lovingiz qabul qilindi.
+                        Holat tasdiqlanishini kuting.
+
+                    </p>
+
+
+                    <div class="payment-info">
+
+                        <div class="payment-row">
+
+                            <span class="payment-label">
+                                order_id
+                            </span>
+
+                            <strong>
+                                {{ donation.order_id }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="payment-row">
+
+                            <span class="payment-label">
+                                amount
+                            </span>
+
+                            <strong>
+                                {{ donation.amount }} so'm
+                            </strong>
+
+                        </div>
+
+
+                        <div class="payment-row">
+
+                            <span class="payment-label">
+                                status
+                            </span>
+
+                            <span class="status-pending">
+                                PENDING
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <a href="/"
+                       class="btn-action">
+
+                        <i class="bi bi-house"></i>
+
+                        Bosh sahifaga qaytish
+
+                    </a>
+
+                </div>
+
+            {% endif %}
+
+
+        </div>
+
+    </article>
+
+</main>
+
+
+<!-- Footer -->
+
+<footer class="footer">
+
+    <div class="container">
+
+        <div class="mb-2">
+
+            <span class="status-online">●</span>
+
+            tizim_holati:
+
+            <span class="status-online">
+                aktiv
+            </span>
+
+        </div>
+
+
+        <div>
+            © <span id="year"></span>
+            axrorback |
+            <span class="text-muted">
+                v4.4-stable
+            </span>
+        </div>
+
+
+        <div class="small opacity-50 mt-1">
+
+            Django va Docker yordamida qurilgan
+
+        </div>
+
+    </div>
+
+</footer>
+
+
+<script>
+
+    document.getElementById('year').textContent =
+        new Date().getFullYear();
+
+</script>
+
+
+</body>
+</html>
+
