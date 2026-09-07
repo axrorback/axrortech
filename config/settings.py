@@ -229,3 +229,5 @@ sentry_sdk.init(
     environment="production",
 )
 TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
+
+CLICK_CHECKOUT_URL = os.getenv('CLICK_CHECKOUT_URL')
