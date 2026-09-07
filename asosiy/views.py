@@ -49,53 +49,37 @@ def donate_page(request):
     if request.method == "POST":
         amount = request.POST.get("amount")
         message = request.POST.get("message")
-        token = request.POST.get("g-recaptcha-response")
-
-        if not token:
-            messages.error(request, "Captcha topilmadi.")
-            return redirect("donate")
-
-        data = {
-            "secret": settings.RECAPTCHA_SECRET_KEY,
-            "response": token
-        }
-
-        try:
-            r = requests.post(
-                "https://www.google.com/recaptcha/api/siteverify",
-                data=data,
-                timeout=5
-            )
-            result = r.json()
-        except requests.RequestException:
-            messages.error(request, "Captcha tekshirishda xatolik.")
-            return redirect("donate")
-
-        if not result.get("success") or result.get("score", 0) < 0.5:
-            messages.error(request, "Captcha tasdiqlanmadi.")
-            return redirect("donate")
 
         full_name = (
             f"{request.user.first_name} {request.user.last_name}".strip()
             or request.user.username
         )
 
-        callback_url = request.build_absolute_uri(reverse("callback_donate"))
-        return_url = request.build_absolute_uri(reverse("click_return"))
+        callback_url = request.build_absolute_uri(
+            reverse("callback_donate")
+        )
+
+        return_url = request.build_absolute_uri(
+            reverse("click_return")
+        )
+
         payload = {
             "amount": amount,
             "payment_method": "click",
-            "external_service_id": f"{request.user.username}",
-            "return_url":return_url,
+            "external_service_id": request.user.username,
+            "return_url": return_url,
             "callback_url": callback_url,
         }
 
         try:
             res = requests.post(
-                settings.CLICK_CHECKOUT_URL,
+                str(settings.CLICK_CHECKOUT_URL),
                 json=payload,
-                timeout=15
+                timeout=15,
             )
+
+            res.raise_for_status()
+
             data = res.json()
 
             Donation.objects.create(
@@ -104,29 +88,39 @@ def donate_page(request):
                 amount=amount,
                 message=message,
                 order_id=str(data.get("order_id")),
-                status=Donation.Status.PENDING
+                status=Donation.Status.PENDING,
             )
 
             return redirect(data["payment_link"])
 
-        except Exception:
-            messages.error(request, "To'lov xizmati vaqtincha ishlamayapti.")
+        except Exception as e:
+            messages.error(
+                request,
+                "To'lov xizmatida xatolik yuz berdi.",
+            )
+
             return redirect("donate")
 
     top_donators = Donation.objects.filter(
         status=Donation.Status.SUCCESS
-    ).order_by('-amount')[:10]
+    ).order_by("-amount")[:10]
 
-    total_sum = Donation.objects.filter(
-        status=Donation.Status.SUCCESS
-    ).aggregate(Sum('amount'))['amount__sum'] or 0
+    total_sum = (
+        Donation.objects.filter(
+            status=Donation.Status.SUCCESS
+        )
+        .aggregate(Sum("amount"))["amount__sum"]
+        or 0
+    )
 
-    return render(request, "donate.html", {
-        "top_donators": top_donators,
-        "total_sum": total_sum,
-        "RECAPTCHA_SITE_KEY": settings.RECAPTCHA_SITE_KEY
-    })
-
+    return render(
+        request,
+        "donate.html",
+        {
+            "top_donators": top_donators,
+            "total_sum": total_sum,
+        },
+    )
 @csrf_exempt
 def donation_callback(request):
     if request.method != "POST":
