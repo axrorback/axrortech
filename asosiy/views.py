@@ -2,6 +2,7 @@ import json
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_GET
 from django.views.generic import TemplateView
 from asosiy.tasks import send_donation_thanks_email
 from blog.models import Post
@@ -14,7 +15,7 @@ from django.db.models import Sum
 from .models import Donation
 from django.contrib import messages
 from django.conf import settings
-
+from config import settings
 class IndexView(TemplateView):
     template_name = 'index.html'
 
@@ -80,18 +81,18 @@ def donate_page(request):
         )
 
         callback_url = request.build_absolute_uri(reverse("callback_donate"))
-
+        return_url = request.build_absolute_uri(reverse("click_return"))
         payload = {
             "amount": amount,
-            "purpose": "donation",
-            "reference_id": f"donate_{request.user.username}",
-            "user_id": str(request.user.id),
+            "payment_method": "click",
+            "external_service_id": f"{request.user.username}",
+            "return_url":return_url,
             "callback_url": callback_url,
         }
 
         try:
             res = requests.post(
-                "https://pay.axror.tech/payment/create/",
+                settings.CLICK_CHECKOUT_URL,
                 json=payload,
                 timeout=15
             )
@@ -136,13 +137,13 @@ def donation_callback(request):
     except (json.JSONDecodeError, TypeError):
         return JsonResponse({"error": "Invalid JSON format"}, status=400)
 
-    order_id = str(data.get("order_id"))
+    order_id = str(data.get("external_service_id"))
     status = data.get("status")
 
     donation = Donation.objects.filter(order_id=order_id).first()
 
     if not donation:
-        return JsonResponse({"error": f"Donation with order_id {order_id} not found"}, status=404)
+        return JsonResponse({"error": f"Donation with external_service_id {order_id} not found"}, status=404)
 
     if status == "success":
         donation.status = Donation.Status.SUCCESS
@@ -159,6 +160,34 @@ def donation_callback(request):
         donation.save()
 
     return JsonResponse({"ok": True, "message": "Status updated successfully"})
+
+@require_GET
+def click_return(request):
+    order_id = request.GET.get("order_id")
+
+    if not order_id:
+        return render(
+            request,
+            "payment/click_return.html",
+            {
+                "error": "Order ID topilmadi."
+            },
+            status=400,
+        )
+
+    donation = get_object_or_404(
+        Donation,
+        order_id=order_id,
+    )
+
+    return render(
+        request,
+        "payment/click_return.html",
+        {
+            "donation": donation,
+        },
+    )
+
 
 
 def custom_page_not_found(request, exception):
