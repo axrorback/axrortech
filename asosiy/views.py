@@ -72,8 +72,8 @@ def donate_page(request):
 
         payload = {
             "amount": amount,
-            "payment_method": "click",
-            "external_service_id": str(request.user.username),
+            "phone": "998931004005",
+            "user_account": str(request.user.username),
             "return_url": return_url,
             "callback_url": callback_url,
         }
