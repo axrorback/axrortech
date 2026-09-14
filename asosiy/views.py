@@ -108,7 +108,7 @@ def donate_page(request):
                 full_name=full_name,
                 amount=amount,
                 message=message,
-                order_id=str(data.get("order_id", "")),
+                order_id=str(data.get("transaction_id", "")),
                 status=Donation.Status.PENDING,
             )
 
