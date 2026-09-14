@@ -94,7 +94,7 @@ def donate_page(request):
 
             data = res.json()
 
-            payment_link = data.get("payment_link")
+            payment_link = data.get("pay_url")
             if not payment_link:
                 logger.error("API javobida 'payment_link' topilmadi: %s", data)
                 messages.error(request, "To'lov havolasini olib bo'lmadi.")
