@@ -16,6 +16,8 @@ from .models import Donation
 from django.contrib import messages
 from django.conf import settings
 from config import settings
+import random
+import string
 import logging
 logger = logging.getLogger(__name__)
 
@@ -66,6 +68,7 @@ def donate_page(request):
             f"{request.user.first_name} {request.user.last_name}".strip()
             or request.user.username
         )
+        suffix = "".join(random.choices(string.ascii_uppercase, k=6))
 
         callback_url = request.build_absolute_uri(reverse("callback_donate"))
         return_url = request.build_absolute_uri(reverse("click_return"))
@@ -73,7 +76,7 @@ def donate_page(request):
         payload = {
             "amount": amount,
             "phone": "998931004005",
-            "user_account": str(request.user.username),
+            "user_account": f"{request.user.username}_{suffix}",
             "return_url": return_url,
             "callback_url": callback_url,
         }
