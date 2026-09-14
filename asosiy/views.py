@@ -16,6 +16,9 @@ from .models import Donation
 from django.contrib import messages
 from django.conf import settings
 from config import settings
+import logging
+logger = logging.getLogger(__name__)
+
 class IndexView(TemplateView):
     template_name = 'index.html'
 
@@ -47,26 +50,30 @@ def profile_view(request, username):
 @login_required
 def donate_page(request):
     if request.method == "POST":
-        amount = request.POST.get("amount")
-        message = request.POST.get("message")
+        raw_amount = request.POST.get("amount", "").strip()
+        message = request.POST.get("message", "").strip()
+
+        try:
+
+            amount = int(float(raw_amount))
+            if amount <= 0:
+                raise ValueError("Summa 0 dan katta bo'lishi kerak")
+        except (ValueError, TypeError):
+            messages.error(request, "Iltimos, to'g'ri to'lov summasini kiriting.")
+            return redirect("donate")
 
         full_name = (
             f"{request.user.first_name} {request.user.last_name}".strip()
             or request.user.username
         )
 
-        callback_url = request.build_absolute_uri(
-            reverse("callback_donate")
-        )
-
-        return_url = request.build_absolute_uri(
-            reverse("click_return")
-        )
+        callback_url = request.build_absolute_uri(reverse("callback_donate"))
+        return_url = request.build_absolute_uri(reverse("click_return"))
 
         payload = {
             "amount": amount,
             "payment_method": "click",
-            "external_service_id": request.user.username,
+            "external_service_id": str(request.user.username),
             "return_url": return_url,
             "callback_url": callback_url,
         }
@@ -75,30 +82,45 @@ def donate_page(request):
             res = requests.post(
                 str(settings.CLICK_CHECKOUT_URL),
                 json=payload,
+                headers={"Content-Type": "application/json"},
                 timeout=15,
             )
-
-            res.raise_for_status()
+            if not res.ok:
+                logger.error(
+                    "Checkout API xatosi [%s]: %s", res.status_code, res.text
+                )
+                print(f"API Xatosi ({res.status_code}):", res.text)
+                res.raise_for_status()
 
             data = res.json()
+
+            payment_link = data.get("payment_link")
+            if not payment_link:
+                logger.error("API javobida 'payment_link' topilmadi: %s", data)
+                messages.error(request, "To'lov havolasini olib bo'lmadi.")
+                return redirect("donate")
 
             Donation.objects.create(
                 user=request.user,
                 full_name=full_name,
                 amount=amount,
                 message=message,
-                order_id=str(data.get("order_id")),
+                order_id=str(data.get("order_id", "")),
                 status=Donation.Status.PENDING,
             )
 
-            return redirect(data["payment_link"])
+            return redirect(payment_link)
+
+        except requests.exceptions.RequestException as e:
+            logger.error("Tarmoq yoki API xatoligi: %s", e, exc_info=True)
+            print("Requests xatoligi:", e)
+            messages.error(request, "To'lov xizmatiga ulanishda xatolik yuz berdi.")
+            return redirect("donate")
 
         except Exception as e:
-            messages.error(
-                request,
-                "To'lov xizmatida xatolik yuz berdi.",
-            )
-
+            logger.error("Kutilmagan xatolik: %s", e, exc_info=True)
+            print("Umumiy xatolik:", e)
+            messages.error(request, "Tizimda kutilmagan xatolik yuz berdi.")
             return redirect("donate")
 
     top_donators = Donation.objects.filter(
@@ -106,9 +128,7 @@ def donate_page(request):
     ).order_by("-amount")[:10]
 
     total_sum = (
-        Donation.objects.filter(
-            status=Donation.Status.SUCCESS
-        )
+        Donation.objects.filter(status=Donation.Status.SUCCESS)
         .aggregate(Sum("amount"))["amount__sum"]
         or 0
     )
