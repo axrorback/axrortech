@@ -22,7 +22,6 @@ RUN uv sync --frozen --no-dev
 
 COPY . .
 
-RUN mkdir -p /app/staticfiles
-RUN mkdir -p /app/media
+RUN mkdir -p /app/staticfiles /app/media
 
 EXPOSE 8000
