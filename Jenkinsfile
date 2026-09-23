@@ -3,43 +3,32 @@ pipeline {
 
     stages {
 
-        stage('Checkout') {
+        stage('Vault Test') {
             steps {
-                checkout scm
+                withVault(
+                    configuration: [
+                        vaultUrl: 'https://vault.axror.tech',
+                        vaultCredentialId: 'vault-approle-jenkins'
+                    ],
+                    vaultSecrets: [
+                        [
+                            path: 'axrortech/data/axrortech',
+                            secretValues: [
+                                [
+                                    envVar: 'TEST_MESSAGE',
+                                    vaultKey: 'TEST_MESSAGE'
+                                ]
+                            ]
+                        ]
+                    ]
+                ) {
+                    sh '''
+                        test -n "$TEST_MESSAGE"
+                        echo "Vault secret successfully loaded!"
+                    '''
+                }
             }
         }
 
-        stage('Test') {
-            steps {
-                sh '''
-                    docker compose config
-                '''
-            }
-        }
-
-        stage('Build') {
-            steps {
-                sh '''
-                    docker compose build web
-                '''
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                sh '''
-                    docker compose up -d
-                '''
-            }
-        }
-
-        stage('Health Check') {
-            steps {
-                sh '''
-                    sleep 10
-                    docker compose ps
-                '''
-            }
-        }
     }
 }
